@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, File, HTTPException, UploadFile
 from pydantic import BaseModel
 
 import ollama  # Ensure you have the Ollama library installed and configured
@@ -73,4 +73,38 @@ async def generate_code(request: AutocompleteRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-# Run the server with: uvicorn main:app --reload
+
+
+@app.post("/describe-image")
+async def describe_image(file: UploadFile = File(...)):
+    try:
+        # Read the image file from the request
+        image_data = await file.read()
+
+        # Save the uploaded image to a temporary location (if needed)
+        with open("uploaded_image.jpg", "wb") as image_file:
+            image_file.write(image_data)
+
+        # Using Ollama's model to interact with the image
+        response = ollama.chat(
+            model="llava:7b",
+            messages=[
+                {
+                    'role': 'user',
+                    'content': 'Describe this image:',
+                    'images': ['./uploaded_image.jpg']  # Point to the saved image file
+                }
+            ]
+        )
+
+        # Extract the description from the response
+        description = response.get('message', {}).get('content', '')
+
+        # Return the description
+        return {"description": description.strip()}
+    
+    except Exception as e:
+        # If there's any error, raise an HTTP exception with status code 500
+        raise HTTPException(status_code=500, detail=str(e))
+
+

@@ -1,6 +1,7 @@
 from fastapi.testclient import TestClient
 from main import app
 from unittest.mock import patch
+from io import BytesIO
 
 client = TestClient(app)
 
@@ -157,3 +158,57 @@ def test_generate_code_real():
     # Perform assertions based on expected behavior
     # Here, we expect that the response will have a 'generated_code' field
     assert 'generated_code' in response_data
+
+    # Test successful image description
+def test_describe_image_success():
+    # Create a mock image file
+    image_file = BytesIO(b"mock image data")
+    image_file.name = "test.png"
+    
+    # Mock response from the Ollama model
+    mock_response = {
+        'message': {
+            'content': 'This is a chart describing the data.'
+        }
+    }
+    
+    with patch('ollama.chat', return_value=mock_response):
+        response = client.post("/describe-image", files={"file": ("test.png", image_file, "image/png")})
+        assert response.status_code == 200
+        assert "chart" in response.json()["description"]
+
+# Test with invalid image format
+def test_describe_image_invalid_format():
+    # Create a mock text file (not an image)
+    text_file = BytesIO(b"mock text data")
+    text_file.name = "test.txt"
+    
+    response = client.post("/describe-image", files={"file": ("test.txt", text_file, "text/plain")})
+    assert response.status_code == 400
+    assert response.json() == {'detail': 'Invalid image format. Only PNG, JPG, and JPEG are allowed.'}
+
+# Test model failure scenario
+def test_describe_image_failure():
+    # Create a mock image file
+    image_file = BytesIO(b"mock image data")
+    image_file.name = "test.png"
+    
+    # Simulate a failure in the Ollama model
+    with patch('ollama.chat', side_effect=Exception("Model failure")):
+        response = client.post("/describe-image", files={"file": ("test.png", image_file, "image/png")})
+        assert response.status_code == 500
+        assert response.json() == {"detail": "Model failure"}
+
+# Test real image description (requires an actual running service and valid model)
+def test_describe_image_real():
+    # Path to an actual image file to test with
+    with open("test.png", "wb") as f:
+        f.write(b"mock image data")  # Create a mock image file
+    
+    with open("test.png", "rb") as image_file:
+        response = client.post("/describe-image", files={"file": ("test.png", image_file, "image/png")})
+    
+    assert response.status_code == 200
+    response_data = response.json()
+    assert 'description' in response_data
+    assert "chart" in response_data["description"]

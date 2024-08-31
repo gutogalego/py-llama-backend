@@ -112,11 +112,81 @@ To get the `py-llama-backend` up and running, follow these steps. This guide ass
     This command will start the server on `http://127.0.0.1:8000`. The `--reload` flag is useful during development because it automatically reloads the server when you make changes to your code.
 
 
+## Endpoints
+
+This API exposes endpoints for interacting with the locally hosted LLM models. Below is an explanation of each endpoint, along with example `curl` commands for testing them.
+
+### 1. **Summarize Endpoint**
+
+**URL:** `/summarize`  
+**Method:** `POST`  
+**Description:** This endpoint receives a long piece of text and returns a summarized version of it. It uses the `llama3.1` model for text summarization.
+
+**Request Body:**
+
+```
+{
+  "text": "Your long text here."
+}
+```
+
+Example curl Command:
+
 `curl -X POST "http://127.0.0.1:8000/summarize" -H "Content-Type: application/json" -d '{"text": "Enter your long text here to summarize."}'`
 
 
+### 2. **Autocomplete Endpoint**
+
+**URL:** `/autocomplete`  
+**Method:** `POST`  
+**Description:** This endpoint takes a prompt and generates a continuation of the text. It utilizes the `tinyllama` model for text completion.
+
+**Request Body:**
+```
+{
+  "text": "Your initial text here."
+}
+```
+
+`curl -X POST "http://127.0.0.1:8000/complete" -H "Content-Type: application/json" -d '{"prompt": "Once upon a time in a land far, far away, there was a small village where people lived in harmony. One day, a stranger arrived with a mysterious message. The villagers gathered around to hear what the stranger had to say. The message was..."}'`
+
+
+### 3. **Generate Code Endpoint**
+
+**URL:** `/generate-code`  
+**Method:** `POST`  
+**Description:** This endpoint generates code. It can take direct instructions, or incomplete code for the LLM to fill in the gaps
+
+**Request Body:**
+```
+{
+  "text": "Your initial code here."
+}
+```
+
+`curl -X POST "http://127.0.0.1:8000/generate-code" -H "Content-Type: application/json" -d '{"text": "def print_hello_world():"}`
+
+### 4. **Autocomplete Endpoint**
+
+**URL:** `/describe-image`  
+**Method:** `POST`  
+**Description:** This endpoint descibres an image. Send and image and get the text description back
 
 ```
-curl -X POST "http://127.0.0.1:8000/summarize" -H "Content-Type: application/json" -d '{"text": "Software engineers are not (and should not be) technicians. I don’t actually think predictability is a good thing in software engineering. This will probably come as a surprise to some people (especially managers), but I’ll explain what I mean. In my view, a great software engineer is one who automates repetitive/manual labor. You would think that this is a pretty low bar to clear, right? Isn’t automation of repetitive tasks … like … programming 101? Wouldn’t most software engineers be great engineers according to my criterion? No. I would argue that most large software engineering organizations incentivize anti-automation and it’s primarily because of their penchant for predictability, especially predictable estimates and predictable work. The reason this happens is that predictable work is work that could have been automated but was not automated. Example: I’ll give a concrete example of predictable work from my last job. Early on we had a dedicated developer for maintaining our web API. Every time some other team added a new gRPC API endpoint to an internal service this developer was tasked with exposing that same information via an HTTP API. This was a fairly routine job but it still required time and thought on their part. Initially managers liked the fact that this developer could estimate reliably (because the work was well-understood) and this developer liked the fact that they didn’t have to leave their comfort zone. But it wasn’t great for the business! This person frequently became a bottleneck for releasing new features because they had inserted their own manual labor as a necessary step in the development pipeline. They made the case that management should hire more such developers like themselves to handle increased demand for their work. Our team pushed back on this because we recognized that this developer’s work was so predictable that it could be completely automated. We made the case to management that rather than hiring another person to do the same work we should be automating more and it’s a good thing we did; that developer soon left the company and instead of hiring to replace them we automated away their job instead. We wrote some code to automatically generate an HTTP API from the corresponding gRPC API and that generated much more value for the business than hiring a new developer. Technicians vs Engineers: I like to use the term “technician” to describe a developer who (A) does work that is well-understood and (B) doesn’t need to leave their comfort zone very often. Obviously there is not a bright line dividing engineers from technicians, but generally speaking the more predictable and routine a developer’s job the more they tend to slide into becoming a technician. In the above example, I viewed the developer maintaining the web API as more of a technician than an engineer. In contrast, the more someone leans into being an engineer the more unpredictable their work gets (along with their estimates). If you’re consistently automating things then all of the predictable work slowly dries up and all that’s left is unpredictable work. The nature of a software engineer’s job is that they are tackling increasingly challenging and ambitious tasks as they progressively automate more. I believe that most tech companies should not bias towards predictability and should avoid hiring/cultivating technicians. The reason that tech companies command outsized valuations is because of automation. Leaning into predictability and well-understood work inadvertently incentivizes manual labor instead of automation. This isn’t obvious to a lot of tech companies because they assume any work involving code is necessarily automation but that’s not always the case. Tech companies that fail to recognize this end up over-hiring and wondering why less work is getting done with more people. Or to put it another way: I actually view it as a red flag if an engineer or team gets into a predictable “flow” because it means that there is a promising opportunity for automation they’re ignoring."}'
+{
+  "image": "Base64 encoded image data here."
+}
 ```
 
+`curl -X POST "http://127.0.0.1:8000/describe-image" -H "Content-Type: multipart/form-data" -F "file=a.png"`
+
+
+## Testing
+
+To run the tests for the `py-llama-backend` project, you need to have `pytest` installed. If it is not installed, you can add it to your environment with:
+
+`pip install pytest`
+
+To execute the tests, simply run:
+
+`pytest`

@@ -97,13 +97,9 @@ To get the `py-llama-backend` up and running, follow these steps. This guide ass
     
     ` python3 -m venv venv source venv/bin/activate`  # On Windows, use `venv\Scripts\activate` 
     
-3.  **Install Dependencies**: Install the required Python packages listed in `requirements.txt`. If `requirements.txt` does not exist, you can create it with `fastapi` and `uvicorn`:
+3.  **Install Dependencies**: Install the required Python packages listed in `requirements.txt`.
     
-    
-    `pip install fastapi uvicorn`
-    
-    Alternatively, install all dependencies in one go:
-    
+    Install all dependencies in one go:
 
     `pip install -r requirements.txt`
     

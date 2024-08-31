@@ -62,7 +62,7 @@ To get the `py-llama-backend` up and running, follow these steps. This guide ass
     `ollama pull llama3.1`
 
     `ollama pull stable-code`
-    
+
     `ollama pull llava:7b`
     
     You can substitute for any model if desired. Just note, the models are pre-saved in `models_config.py`. Make sure to change those to the desired models
@@ -95,7 +95,7 @@ To get the `py-llama-backend` up and running, follow these steps. This guide ass
 2.  **Create a Virtual Environment**: It's good practice to use a virtual environment to manage dependencies. Create and activate a virtual environment with:
     
     
-    `` python3 -m venv venv source venv/bin/activate  # On Windows, use `venv\Scripts\activate` ``
+    ` python3 -m venv venv source venv/bin/activate`  # On Windows, use `venv\Scripts\activate` 
     
 3.  **Install Dependencies**: Install the required Python packages listed in `requirements.txt`. If `requirements.txt` does not exist, you can create it with `fastapi` and `uvicorn`:
     

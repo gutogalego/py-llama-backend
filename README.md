@@ -27,7 +27,7 @@ It's the quickest way to get a simple and performant API up and running in Pytho
 
 ## Why run LLMs locally with Ollama?
 
-The problem we're trying to solve are really simple. We don't need any complicated model, tinyllama can do text summarization pretty well. The downside is that our response time will be limited by our GPU. With a very slow GPU, using OpenAI's gpt-3.5-turbo will outperform us, but with a decent GPU, running locally will be faster cause we have one less network roundtrip. Also we don't have to pay for the API. Our only cost is our own server.
+The problems we're trying to solve are really simple. We don't need any complicated model, llama3.1 can do text summarization pretty well, and tinyllama text autocomplete. The downside is that our response time will be limited by our GPU. With a very slow GPU, using OpenAI's gpt-3.5-turbo will outperform us, but with a decent GPU, running locally will be faster cause we have one less network roundtrip. Also we don't have to pay for the API. Our only cost is our own server.
 
 If this wasn't an afternoon project, we could consider doing something more cloud-native and using AWS bedrock. 
 
@@ -58,8 +58,9 @@ To get the `py-llama-backend` up and running, follow these steps. This guide ass
     
     
     `ollama pull tinyllama`
+    `ollama pull llama3.1`
     
-    You can substitute `tinyllama` with another model if desired.
+    You can substitute `tinyllama` and `llama3.1` with another model if desired.
     
 3.  **Run Ollama Locally**: Start the Ollama service to run the LLM locally.
 

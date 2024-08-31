@@ -31,7 +31,9 @@ The problem we're trying to solve are really simple. We don't need any complicat
 
 If this wasn't an afternoon project, we could consider doing something more cloud-native and using AWS bedrock. 
 
-Requirements:
+# Setup and running:
+
+### LLM service
 
 Download ollama https://ollama.com/download
 
@@ -40,6 +42,18 @@ pull the desired llm model with `ollama pull tinyllama` (substitute tinyllama fo
 run ollama locally with `ollama serve`
 
 we are using the `tinyllama` model. We don't need it to be the most accurate one, just fast. You can use any model you like.
+
+note: if you run into an issue with ollama serve (`Error: listen tcp 127.0.0.1:11434: bind: address already in use`) there are some possibilities:
+
+1) you're on a mac and ollama is running since first install. There should be an ollama icon in the toolbar and you can quit it from there. Then you can run `ollama serve` from terminal later
+
+2) if that's not the case, you can kill the process like such, and restart ollama:
+
+```
+$ pgrep ollama
+74877
+$ kill 74877
+```
 
 
 

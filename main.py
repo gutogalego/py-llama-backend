@@ -41,7 +41,7 @@ async def autocomplete_text(request: AutocompleteRequest):
         response = ollama.chat(model='tinyllama', messages=[
             {
                 'role': 'user',
-                'content': f"Autocomplete the following text: {request.text}",
+                'content': f"Autocomplete the following sentence. Just the sentence, nothing more: {request.text}",
             },
         ])
 
@@ -55,6 +55,22 @@ async def autocomplete_text(request: AutocompleteRequest):
         # If there's any error, raise an HTTP exception with status code 500
         raise HTTPException(status_code=500, detail=str(e))
 
+
+
+@app.post("/generate-code")
+async def generate_code(request: AutocompleteRequest):
+    try:
+        result = ollama.generate(
+        model='stable-code',
+        prompt=request.text,
+        )
+
+        # Return the autocompleted text
+        return {result['response']}
+    
+    except Exception as e:
+        # If there's any error, raise an HTTP exception with status code 500
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 # Run the server with: uvicorn main:app --reload

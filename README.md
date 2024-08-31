@@ -149,7 +149,7 @@ Example curl Command:
 
 Example curl Command:
 
-`curl -X POST "http://127.0.0.1:8000/complete" -H "Content-Type: application/json" -d '{"prompt": "Once upon a time in a land far, far away, there was a small village where people lived in harmony. One day, a stranger arrived with a mysterious message. The villagers gathered around to hear what the stranger had to say. The message was..."}'`
+`curl -X POST "http://127.0.0.1:8000/autocomplete" -H "Content-Type: application/json" -d '{"text": "Once upon a time in a land far, far away, there was a small village where people lived in harmony. One day, a stranger arrived with a mysterious message. The villagers gathered around to hear what the stranger had to say. The message was..."}'`
 
 
 ### 3. **Generate Code Endpoint**

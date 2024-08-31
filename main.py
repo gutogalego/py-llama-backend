@@ -1,6 +1,6 @@
-# main.py
-from fastapi import FastAPI, File, HTTPException, UploadFile
-from pydantic import BaseModel
+from fastapi import FastAPI, File, HTTPException, UploadFile, Request
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel, ValidationError
 from typing import Dict
 import ollama
 
@@ -19,17 +19,18 @@ app = FastAPI()
 class TextRequest(BaseModel):
     text: str
 
+@app.exception_handler(ValidationError)
+async def validation_exception_handler(request: Request, exc: ValidationError) -> JSONResponse:
+    return JSONResponse(
+        status_code=422,
+        content={"detail": exc.errors()}
+    )
+
 @app.post("/summarize")
 async def summarize_text(request: TextRequest) -> Dict[str, str]:
-    """
-    Endpoint to summarize the provided text using the specified LLM model.
+    if not request.text:
+        raise HTTPException(status_code=400, detail="Text field cannot be empty.")
     
-    Args:
-    - request: TextRequest containing the text to be summarized.
-
-    Returns:
-    - A dictionary with the summarized text.
-    """
     try:
         response = ollama.chat(model=LLM_SUMMARIZATION_MODEL, messages=[
             {
@@ -38,6 +39,8 @@ async def summarize_text(request: TextRequest) -> Dict[str, str]:
             },
         ])
         summarized_text: str = response.get('message', {}).get('content', '')
+        if not summarized_text:
+            raise HTTPException(status_code=500, detail="Failed to generate a summary.")
         return {"summarized_text": summarized_text}
     
     except Exception as e:
@@ -45,15 +48,9 @@ async def summarize_text(request: TextRequest) -> Dict[str, str]:
 
 @app.post("/autocomplete")
 async def autocomplete_text(request: TextRequest) -> Dict[str, str]:
-    """
-    Endpoint to autocomplete the provided text using the specified LLM model.
-
-    Args:
-    - request: TextRequest containing the text to autocomplete.
-
-    Returns:
-    - A dictionary with the autocompleted text.
-    """
+    if not request.text:
+        raise HTTPException(status_code=400, detail="Text field cannot be empty.")
+    
     try:
         response = ollama.chat(model=LLM_AUTOCOMPLETE_MODEL, messages=[
             {
@@ -62,6 +59,8 @@ async def autocomplete_text(request: TextRequest) -> Dict[str, str]:
             },
         ])
         autocompleted_text: str = response.get('message', {}).get('content', '')
+        if not autocompleted_text:
+            raise HTTPException(status_code=500, detail="Failed to autocomplete text.")
         return {"autocompleted_text": autocompleted_text}
     
     except Exception as e:
@@ -69,36 +68,27 @@ async def autocomplete_text(request: TextRequest) -> Dict[str, str]:
 
 @app.post("/generate-code")
 async def generate_code(request: TextRequest) -> Dict[str, str]:
-    """
-    Endpoint to generate code based on the provided text prompt using the specified LLM model.
-
-    Args:
-    - request: TextRequest containing the prompt text for code generation.
-
-    Returns:
-    - A dictionary with the generated code.
-    """
+    if not request.text:
+        raise HTTPException(status_code=400, detail="Text field cannot be empty.")
+    
     try:
         result = ollama.generate(
             model=LLM_CODE_GENERATION_MODEL,
             prompt=request.text,
         )
-        return {"generated_code": result['response']}
+        generated_code: str = result.get('response', '')
+        if not generated_code:
+            raise HTTPException(status_code=500, detail="Failed to generate code.")
+        return {"generated_code": generated_code}
     
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/describe-image")
 async def describe_image(file: UploadFile = File(...)) -> Dict[str, str]:
-    """
-    Endpoint to describe the uploaded image using the specified LLM model.
-
-    Args:
-    - file: UploadFile object containing the image to describe.
-
-    Returns:
-    - A dictionary with the image description.
-    """
+    if not file.filename.lower().endswith(('.png', '.jpg', '.jpeg')):
+        raise HTTPException(status_code=400, detail="Invalid image format. Only PNG, JPG, and JPEG are allowed.")
+    
     image_path: str = "uploaded_image.jpg"
     try:
         image_data: bytes = await file.read()
@@ -115,6 +105,8 @@ async def describe_image(file: UploadFile = File(...)) -> Dict[str, str]:
             ]
         )
         description: str = response.get('message', {}).get('content', '')
+        if not description:
+            raise HTTPException(status_code=500, detail="Failed to describe the image.")
         return {"description": description.strip()}
     
     except Exception as e:

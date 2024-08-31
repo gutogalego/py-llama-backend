@@ -24,17 +24,9 @@ def test_summarize_text_success():
 def test_summarize_text_empty():
     payload = {"text": ""}
     
-    # Mock response from the Ollama model
-    mock_response = {
-        'message': {
-            'content': 'No text provided.'
-        }
-    }
-    
-    with patch('ollama.chat', return_value=mock_response):
-        response = client.post("/summarize", json=payload)
-        assert response.status_code == 200
-        assert response.json() == {"summarized_text": 'No text provided.'}
+    response = client.post("/summarize", json=payload)
+    assert response.status_code == 400
+    assert response.json() == {'detail': 'Text field cannot be empty.'}
 
 # Test model failure scenario
 def test_summarize_text_failure():

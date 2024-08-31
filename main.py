@@ -1,26 +1,34 @@
+# main.py
 from fastapi import FastAPI, File, HTTPException, UploadFile
 from pydantic import BaseModel
-
 import ollama  # Ensure you have the Ollama library installed and configured
+
+# Import models and prompts from models_config.py
+from models_config import (
+    LLM_SUMMARIZATION_MODEL,
+    LLM_AUTOCOMPLETE_MODEL,
+    LLM_CODE_GENERATION_MODEL,
+    LLM_IMAGE_DESCRIPTION_MODEL,
+    PROMPT_SUMMARIZE_TEXT,
+    PROMPT_AUTOCOMPLETE_TEXT,
+    PROMPT_DESCRIBE_IMAGE
+)
 
 app = FastAPI()
 
 # Define the input schema for the summarization request
-class SummarizationRequest(BaseModel):
+class TextRequest(BaseModel):
     text: str  # Input text to summarize
 
-# Define the input schema for the autocomplete request
-class AutocompleteRequest(BaseModel):
-    text: str  # Input text to autocomplete
 
 @app.post("/summarize")
-async def summarize_text(request: SummarizationRequest):
+async def summarize_text(request: TextRequest):
     try:
         # Using the Ollama library to interact with the model
-        response = ollama.chat(model='llama3.1', messages=[
+        response = ollama.chat(model=LLM_SUMMARIZATION_MODEL, messages=[
             {
                 'role': 'user',
-                'content': f"Summarize the following text: {request.text}",
+                'content': f"{PROMPT_SUMMARIZE_TEXT}{request.text}",
             },
         ])
 
@@ -35,13 +43,13 @@ async def summarize_text(request: SummarizationRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/autocomplete")
-async def autocomplete_text(request: AutocompleteRequest):
+async def autocomplete_text(request: TextRequest):
     try:
         # Using the Ollama library to interact with the model
-        response = ollama.chat(model='tinyllama', messages=[
+        response = ollama.chat(model=LLM_AUTOCOMPLETE_MODEL, messages=[
             {
                 'role': 'user',
-                'content': f"Autocomplete the following sentence. Just the sentence, nothing more: {request.text}",
+                'content': f"{PROMPT_AUTOCOMPLETE_TEXT}{request.text}",
             },
         ])
 
@@ -55,25 +63,21 @@ async def autocomplete_text(request: AutocompleteRequest):
         # If there's any error, raise an HTTP exception with status code 500
         raise HTTPException(status_code=500, detail=str(e))
 
-
-
 @app.post("/generate-code")
-async def generate_code(request: AutocompleteRequest):
+async def generate_code(request: TextRequest):
     try:
+        # Using the Ollama library to generate code
         result = ollama.generate(
-        model='stable-code',
-        prompt=request.text,
+            model=LLM_CODE_GENERATION_MODEL,
+            prompt=request.text,
         )
 
-        # Return the autocompleted text
-        return {result['response']}
+        # Return the generated code
+        return {"generated_code": result['response']}
     
     except Exception as e:
         # If there's any error, raise an HTTP exception with status code 500
         raise HTTPException(status_code=500, detail=str(e))
-
-
-
 
 @app.post("/describe-image")
 async def describe_image(file: UploadFile = File(...)):
@@ -87,11 +91,11 @@ async def describe_image(file: UploadFile = File(...)):
 
         # Using Ollama's model to interact with the image
         response = ollama.chat(
-            model="llava:7b",
+            model=LLM_IMAGE_DESCRIPTION_MODEL,
             messages=[
                 {
                     'role': 'user',
-                    'content': 'Describe this image:',
+                    'content': PROMPT_DESCRIBE_IMAGE,
                     'images': ['./uploaded_image.jpg']  # Point to the saved image file
                 }
             ]
@@ -106,5 +110,3 @@ async def describe_image(file: UploadFile = File(...)):
     except Exception as e:
         # If there's any error, raise an HTTP exception with status code 500
         raise HTTPException(status_code=500, detail=str(e))
-
-

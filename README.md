@@ -147,6 +147,8 @@ Example curl Command:
 }
 ```
 
+Example curl Command:
+
 `curl -X POST "http://127.0.0.1:8000/complete" -H "Content-Type: application/json" -d '{"prompt": "Once upon a time in a land far, far away, there was a small village where people lived in harmony. One day, a stranger arrived with a mysterious message. The villagers gathered around to hear what the stranger had to say. The message was..."}'`
 
 
@@ -163,6 +165,8 @@ Example curl Command:
 }
 ```
 
+Example curl Command:
+
 `curl -X POST "http://127.0.0.1:8000/generate-code" -H "Content-Type: application/json" -d '{"text": "def print_hello_world():"}`
 
 ### 4. **Autocomplete Endpoint**
@@ -177,7 +181,9 @@ Example curl Command:
 }
 ```
 
-`curl -X POST "http://127.0.0.1:8000/describe-image" -H "Content-Type: multipart/form-data" -F "file=a.png"`
+Example curl Command (note the filepath. File needs to exist on your machine):
+
+`curl -X POST "http://127.0.0.1:8000/describe-image" -H "Content-Type: multipart/form-data" -F "file=@a.png"`
 
 
 ## Testing

@@ -79,9 +79,6 @@ To get the `py-llama-backend` up and running, follow these steps. This guide ass
 
 1.  **Python 3.10**: Ensure you have Python 3.10 installed on your machine. You can check your Python version by running:
     
-    bash
-    
-    Copy code
     
     `python3 --version`
     
@@ -98,19 +95,13 @@ To get the `py-llama-backend` up and running, follow these steps. This guide ass
     
 2.  **Pull the LLM Model**: Use the `ollama` command-line tool to pull the desired LLM model. For this project, we're using `tinyllama`. Run:
     
-    bash
-    
-    Copy code
     
     `ollama pull tinyllama`
     
     You can substitute `tinyllama` with another model if desired.
     
 3.  **Run Ollama Locally**: Start the Ollama service to run the LLM locally.
-    
-    bash
-    
-    Copy code
+
     
     `ollama serve`
     
@@ -133,41 +124,26 @@ To get the `py-llama-backend` up and running, follow these steps. This guide ass
 
 1.  **Clone the Repository**: Start by cloning the repository and navigating into the project directory:
     
-    bash
-    
-    Copy code
     
     `git clone https://github.com/yourusername/py-llama-backend.git cd py-llama-backend`
     
 2.  **Create a Virtual Environment**: It's good practice to use a virtual environment to manage dependencies. Create and activate a virtual environment with:
     
-    bash
-    
-    Copy code
     
     `` python3 -m venv venv source venv/bin/activate  # On Windows, use `venv\Scripts\activate` ``
     
 3.  **Install Dependencies**: Install the required Python packages listed in `requirements.txt`. If `requirements.txt` does not exist, you can create it with `fastapi` and `uvicorn`:
     
-    bash
-    
-    Copy code
     
     `pip install fastapi uvicorn`
     
     Alternatively, install all dependencies in one go:
     
-    bash
-    
-    Copy code
-    
+
     `pip install -r requirements.txt`
     
 4.  **Run the FastAPI Server**: Start the FastAPI server using Uvicorn:
     
-    bash
-    
-    Copy code
     
     `uvicorn main:app --reload`
     

@@ -167,7 +167,7 @@ Example curl Command:
 
 Example curl Command:
 
-`curl -X POST "http://127.0.0.1:8000/generate-code" -H "Content-Type: application/json" -d '{"text": "def print_hello_world():"}`
+`curl -X POST "http://127.0.0.1:8000/generate-code" -H "Content-Type: application/json" -d '{"text": "def print_hello_world():"}'`
 
 ### 4. **Autocomplete Endpoint**
 

@@ -58,8 +58,11 @@ To get the `py-llama-backend` up and running, follow these steps. This guide ass
     
     
     `ollama pull tinyllama`
+
     `ollama pull llama3.1`
+
     `ollama pull stable-code`
+    
     `ollama pull llava:7b`
     
     You can substitute for any model if desired. Just note, the models are pre-saved in `models_config.py`. Make sure to change those to the desired models

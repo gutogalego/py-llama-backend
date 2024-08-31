@@ -74,7 +74,8 @@ To get the `py-llama-backend` up and running, follow these steps. This guide ass
         *   Alternatively, use the terminal to find and kill the running process:
             
             
-            `pgrep ollama  # This command finds the process ID for Ollama kill <process_id>  # Replace <process_id> with the actual process ID from the above command`
+            `pgrep ollama`  # This command finds the process ID for Ollama 
+            `kill <process_id>`  # Replace <process_id> with the actual process ID from the above command`
             
         *   Restart the service with `ollama serve`.
 
